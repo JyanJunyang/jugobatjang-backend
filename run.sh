@@ -1,1 +1,1 @@
-uvicorn app.main:app --port 8080 --reload
+poetry run uvicorn app.main:app --reload
