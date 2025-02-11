@@ -2,7 +2,7 @@
 name = "jugobatjang-backend"
 version = "0.1.0"
 description = ""
-authors = ["chilln <kimjihan77@naver.com>"]
+authors = ["chillin-jihan <kimjihan77@naver.com>"]
 readme = "README.md"
 packages = [{include = "jugobatjang_backend"}]
 
