@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "jugobatjang-backend"
+version = "0.1.0"
+description = ""
+authors = ["chilln <kimjihan77@naver.com>"]
+readme = "README.md"
+packages = [{include = "jugobatjang_backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.8"
+uvicorn = "^0.34.0"
+black = "^25.1.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
