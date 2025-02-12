@@ -11,6 +11,10 @@ python = "^3.11"
 fastapi = "^0.115.8"
 uvicorn = "^0.34.0"
 black = "^25.1.0"
+faker = "^36.1.0"
+pytest-mock = "^3.14.0"
+factory-boy = "^3.3.3"
+sqlalchemy = "^2.0.38"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
