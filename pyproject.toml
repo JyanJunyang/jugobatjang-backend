@@ -15,6 +15,11 @@ faker = "^36.1.0"
 pytest-mock = "^3.14.0"
 factory-boy = "^3.3.3"
 sqlalchemy = "^2.0.38"
+pydantic = "^2.10.6"
+dotenv = "^0.9.9"
+mysqlclient = "^2.2.7"
+pymysql = "^1.1.1"
+pydantic-settings = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
