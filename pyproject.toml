@@ -20,6 +20,7 @@ dotenv = "^0.9.9"
 mysqlclient = "^2.2.7"
 pymysql = "^1.1.1"
 pydantic-settings = "^2.8.0"
+sqlmodel = "^0.0.22"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
