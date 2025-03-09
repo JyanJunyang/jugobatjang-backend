@@ -19,15 +19,17 @@ class Configs(BaseSettings):
     DB_HOST: str = _getenv("DB_HOST")
     DB_PORT: str = _getenv("DB_PORT")
     DATA_BASE: str = _getenv("DATA_BASE")
+    UNIX_SOCKET: str = _getenv("UNIX_SOCKET")
 
     DATABASE_URI: str = (
-        "{db_engine}://{user}:{password}@{host}:{port}/{database}".format(
+        "{db_engine}://{user}:{password}@{host}:{port}/{database}?{unix_socket}".format(
             db_engine=DB_ENGINE,
             user=DB_USER,
             password=DB_PASSWORD,
             host=DB_HOST,
             port=DB_PORT,
             database=DATA_BASE,
+            unix_socket=UNIX_SOCKET,
         )
     )
 
