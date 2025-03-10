@@ -33,5 +33,12 @@ class Configs(BaseSettings):
         )
     )
 
+    KAKAO_API_KEY: str = _getenv("KAKAO_API_KEY")
+    KAKAO_REDIRECT_URI: str = _getenv("KAKAO_REDIRECT_URI")
+
+    SECRET_KEY: str = _getenv("SECRET_KEY")
+    REFRESH_SECRET_KEY: str = _getenv("REFRESH_SECRET_KEY")
+    ALGORITHM: str = _getenv("ALGORITHM")
+
 
 configs = Configs()
