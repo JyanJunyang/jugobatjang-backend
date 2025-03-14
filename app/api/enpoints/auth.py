@@ -29,6 +29,7 @@ async def kakao_callback(req: Request):
 @router.post("/signin", response_model=BaseResponse)
 async def sign_in(
     req: AuthDTOModel,
+    version: str = Header(...),
     access_token: str = Header(...),
     refresh_token: str = Header(...),
     db=Depends(get_db),
