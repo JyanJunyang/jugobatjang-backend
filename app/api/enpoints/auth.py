@@ -1,13 +1,9 @@
-# 가입, 로그인
-
-from typing import Annotated
-
 from fastapi import APIRouter, Depends, Header, Request
 
 from app.core.database import get_db
 from app.core.security import create_jwt_access_token, create_jwt_refresh_token
 from app.schema.auth_schema import AuthDTOModel
-from app.schema.base_response import BaseResponse
+from app.schema.base import BaseResponse
 from app.services.auth_service import AuthService
 from app.services.user_service import UserService
 
