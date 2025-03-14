@@ -19,17 +19,26 @@ class Configs(BaseSettings):
     DB_HOST: str = _getenv("DB_HOST")
     DB_PORT: str = _getenv("DB_PORT")
     DATA_BASE: str = _getenv("DATA_BASE")
+    UNIX_SOCKET: str = _getenv("UNIX_SOCKET")
 
     DATABASE_URI: str = (
-        "{db_engine}://{user}:{password}@{host}:{port}/{database}".format(
+        "{db_engine}://{user}:{password}@{host}:{port}/{database}?{unix_socket}".format(
             db_engine=DB_ENGINE,
             user=DB_USER,
             password=DB_PASSWORD,
             host=DB_HOST,
             port=DB_PORT,
             database=DATA_BASE,
+            unix_socket=UNIX_SOCKET,
         )
     )
+
+    KAKAO_API_KEY: str = _getenv("KAKAO_API_KEY")
+    KAKAO_REDIRECT_URI: str = _getenv("KAKAO_REDIRECT_URI")
+
+    SECRET_KEY: str = _getenv("SECRET_KEY")
+    REFRESH_SECRET_KEY: str = _getenv("REFRESH_SECRET_KEY")
+    ALGORITHM: str = _getenv("ALGORITHM")
 
 
 configs = Configs()
