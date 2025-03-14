@@ -29,3 +29,10 @@ class NotFoundError(HTTPException):
         self, detail: Optional[str] = None, headers: Optional[Dict[str, Any]] = None
     ):
         super().__init__(status.HTTP_404_NOT_FOUND, detail, headers)
+
+
+class TokenExpiredException(HTTPException):
+    """토큰 만료 오류"""
+
+    def __init__(self, detail="토큰이 만료되었습니다.", headers=None):
+        super().__init__(status.HTTP_401_UNAUTHORIZED, detail, headers)
