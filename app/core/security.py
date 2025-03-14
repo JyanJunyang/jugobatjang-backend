@@ -1,14 +1,28 @@
 from datetime import datetime
 
+from fastapi import Depends
 from jose import ExpiredSignatureError, jwt
 
 from app.core.config import configs
 from app.core.exceptions import RequestDataMissingException, TokenExpiredException
+from app.schema.base import BaseHeader
 
 SECRET_KEY = configs.SECRET_KEY
 ALGORITHM = configs.ALGORITHM
 REFRESH_SECRET_KEY = configs.REFRESH_SECRET_KEY
 ALGORITHM = configs.ALGORITHM
+
+
+def auth_check(headers: BaseHeader = Depends()):
+    """API 회원 인증 검증 메소드. (주입해서 처리할 예정)"""
+    access_token = headers.access_token
+    refresh_token = headers.refresh_token
+
+    if access_token is None or refresh_token is None:
+        raise RequestDataMissingException()
+
+    res = decode_jwt_payload(access_token=access_token, refresh_token=refresh_token)
+    return res
 
 
 def create_jwt_access_token(data):
