@@ -8,7 +8,7 @@ from sqlalchemy.orm.session import Session
 from app.core.config import configs
 from app.core.exceptions import DuplicatedErrorException, UnknownErrorException
 from app.model.users import Users
-from app.schema.auth_schema import SocialUserDtoModel
+from app.schema.auth_schema import SocialUserDTOModel
 
 KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/token"
 KAKAO_USER_ME_URL = "https://kapi.kakao.com/v2/user/me"
@@ -35,12 +35,12 @@ class AuthService:
 
         return res
 
-    async def get_kakao_user_info(self, access_token: str) -> SocialUserDtoModel:
+    async def get_kakao_user_info(self, access_token: str) -> SocialUserDTOModel:
         """카카오 회원정보 가져오는 메소드."""
 
         async with httpx.AsyncClient() as client:
-            user = (
-                await client.post(
+            try:
+                response = await client.post(
                     url=KAKAO_USER_ME_URL,
                     headers={
                         "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
@@ -48,21 +48,42 @@ class AuthService:
                     },
                     params={"property_keys[]": "kakao_account.email"},
                 )
-            ).json()
+                response.raise_for_status()  # HTTP 오류 응답 확인
+                user = response.json()
+            except httpx.HTTPStatusError as e:
+                raise UnknownErrorException(
+                    detail=f"카카오 API 호출 중 오류 발생: {str(e)}"
+                )
+            except httpx.RequestError as e:
+                raise UnknownErrorException(
+                    detail=f"카카오 API 요청 중 오류 발생: {str(e)}"
+                )
 
-            social_id = user.get("id")
-            account = user.get("kakao_account")
-            email = account.get("email")
-            name = account.get("name")
-            b_year = account.get("birthyear")
-            b_day = account.get("birthday")
+            try:
+                social_id = user.get("id")
+                if not social_id:
+                    raise ValueError("카카오 소셜 ID를 찾을 수 없습니다")
 
-            birthday = None
-            if b_year and b_day:
-                birthday = datetime.strptime(f"{b_year}{b_day}", "%Y%m%d")
+                account = user.get("kakao_account", {})
+                email = account.get("email")
+                profile = account.get("profile", {})
+                name = profile.get("nickname")
+                b_year = account.get("birthyear")
+                b_day = account.get("birthday")
+                birthday = None
+                if b_year and b_day:
+                    birthday = datetime.strptime(f"{b_year}{b_day}", "%Y-%m-%d")
 
-            return SocialUserDtoModel(
-                social_id=f"{social_id}", email=email, name=name, birthday=birthday
+            except (KeyError, TypeError) as e:
+                raise UnknownErrorException(
+                    detail=f"카카오 사용자 정보 파싱 중 오류 발생: {str(e)}"
+                )
+
+            return SocialUserDTOModel(
+                social_id=f"{social_id}",
+                email=email,
+                name=name,
+                birthday=birthday,
             )
 
     async def signup_new_user(self, user_data):
