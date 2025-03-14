@@ -8,4 +8,4 @@ class BaseResponse(BaseModel):
 
     status_code: int
     data: Any | None = None
-    message: str
+    message: str = "success"
