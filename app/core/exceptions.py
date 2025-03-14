@@ -36,3 +36,12 @@ class TokenExpiredException(HTTPException):
 
     def __init__(self, detail="토큰이 만료되었습니다.", headers=None):
         super().__init__(status.HTTP_401_UNAUTHORIZED, detail, headers)
+
+
+class RequestDataMissingException(HTTPException):
+    """필수 요청 파라미터 누락 오류"""
+
+    def __init__(
+        self, detail: Optional[str] = None, headers: Optional[Dict[str, Any]] = None
+    ):
+        super().__init__(status.HTTP_400_BAD_REQUEST, detail, headers)
