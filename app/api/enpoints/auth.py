@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Header, Request
 from app.core.database import get_db
 from app.core.security import create_jwt_access_token, create_jwt_refresh_token
 from app.schema.auth_schema import AuthDTOModel
-from app.schema.base import BaseResponse
+from app.schema.base import BaseHeader, BaseResponse, get_headers
 from app.services.auth_service import AuthService
 from app.services.user_service import UserService
 
@@ -25,9 +25,7 @@ async def kakao_callback(req: Request):
 @router.post("/signin", response_model=BaseResponse)
 async def sign_in(
     req: AuthDTOModel,
-    version: str = Header(...),
-    access_token: str = Header(...),
-    refresh_token: str = Header(...),
+    headers: BaseHeader = Depends(get_headers),
     db=Depends(get_db),
 ):
     """소셜ID값으로 회원여부를 확인하고, 없으면 가입 후 자체 JWT 발급하는 API."""
@@ -35,6 +33,9 @@ async def sign_in(
     is_registered = await user.is_registered_user(social_id=req.social_id)
 
     auth = AuthService()
+    access_token = headers.access_token
+    refresh_token = headers.refresh_token
+
     if is_registered:
         social_user = await auth.get_kakao_user_info(access_token=access_token)
         social_id = social_user.social_id
