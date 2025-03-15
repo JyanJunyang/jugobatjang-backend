@@ -2,8 +2,7 @@ from datetime import datetime
 from enum import Enum
 
 from sqlalchemy import DateTime, Integer, String
-from sqlalchemy.orm import relationship
-from sqlmodel import Column, Field, Relationship
+from sqlmodel import Column, Field
 
 from app.model.base_model import BaseModel
 

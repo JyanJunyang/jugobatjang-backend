@@ -2,8 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from app.model.users import LoginTypeEnum
-
 
 class AuthDTOModel(BaseModel):
     """회원가입, 로그인 DTO"""
