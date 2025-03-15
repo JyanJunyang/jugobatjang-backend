@@ -8,7 +8,7 @@ from sqlalchemy.orm.session import Session
 from app.core.config import configs
 from app.core.exceptions import DuplicatedErrorException, UnknownErrorException
 from app.model.users import Users
-from app.schema.auth_schema import SocialUserDTOModel
+from app.schema.auth import SocialUserDTOModel
 
 KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/token"
 KAKAO_USER_ME_URL = "https://kapi.kakao.com/v2/user/me"

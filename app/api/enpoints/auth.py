@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Header, Request
 
 from app.core.database import get_db
 from app.core.security import create_jwt_access_token, create_jwt_refresh_token
-from app.schema.auth_schema import AuthDTOModel
+from app.schema.auth import AuthDTOModel
 from app.schema.base import BaseHeader, BaseResponse, get_headers
 from app.services.auth_service import AuthService
 from app.services.user_service import UserService
