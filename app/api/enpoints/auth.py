@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, Header, Request
 
 from app.core.database import get_db
-from app.core.security import create_jwt_access_token, create_jwt_refresh_token
+from app.core.security import (
+    create_jwt_access_token,
+    create_jwt_refresh_token,
+    verify_token,
+)
 from app.schema.auth import AuthDTOModel
 from app.schema.base import BaseHeader, BaseResponse, get_headers
 from app.services.auth_service import AuthService
@@ -54,3 +58,11 @@ async def sign_in(
     token = {**access_token, **refresh_token}
 
     return BaseResponse(status_code=200, data=token)
+
+
+@router.post("/validate")
+async def validate_token(
+    headers: BaseHeader = Depends(get_headers),
+):
+    """토큰 유효성 체크"""
+    return BaseResponse(status_code=200, data=verify_token(headers=headers))
