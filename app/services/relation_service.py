@@ -69,3 +69,15 @@ class RelationService:
         except Exception as e:
             self.db.rollback()
             print(str(e))
+
+    def get_user_relations(self, user_id: int):
+        relations = (
+            self.db.query(Relations.id, Relations.name, Relations.color_code)
+            .filter(or_(Relations.user_id == user_id, Relations.user_id == None))
+            .all()
+        )
+
+        return [
+            UserRelationDTOModel(id=rel.id, name=rel.name, color_code=rel.color_code)
+            for rel in relations
+        ]
