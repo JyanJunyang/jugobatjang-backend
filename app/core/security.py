@@ -13,7 +13,7 @@ REFRESH_SECRET_KEY = configs.REFRESH_SECRET_KEY
 ALGORITHM = configs.ALGORITHM
 
 
-def auth_check(headers: BaseHeader = Depends()):
+def verify_token(headers: BaseHeader = Depends()):
     """API 회원 인증 검증 메소드. (주입해서 처리할 예정)"""
     access_token = headers.access_token
     refresh_token = headers.refresh_token
@@ -34,7 +34,7 @@ def create_jwt_access_token(data):
 
     access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    return dict(access_token=access_token, expires_in=exp)
+    return dict(access_token=access_token)
 
 
 def create_jwt_refresh_token(data):
@@ -45,7 +45,7 @@ def create_jwt_refresh_token(data):
 
     refresh_token = jwt.encode(to_encode, REFRESH_SECRET_KEY, algorithm=ALGORITHM)
 
-    return dict(refresh_token=refresh_token, refresh_expires_in=exp)
+    return dict(refresh_token=refresh_token)
 
 
 def decode_jwt_payload(access_token: str, refresh_token: str):

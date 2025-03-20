@@ -1,8 +1,16 @@
+from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlmodel import Field
 
 from app.model.base_model import BaseModel
+
+
+class StatusEnum(str, Enum):
+    A = "A"
+    N = "N"
+    U = "U"
 
 
 class EventTypes(BaseModel, table=True):
@@ -10,13 +18,11 @@ class EventTypes(BaseModel, table=True):
 
     __tablename__ = "event_types"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(48), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    color_code = Column(String(7), nullable=False)
-    type_no = Column(
-        Integer, nullable=False, description="100번대 숫자부터 커스텀 경조사타입"
-    )
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(sa_column=Column(String(48), nullable=False))
+    user_id: int = Field(sa_column=Column(Integer, nullable=True))
+    color_code: str = Field(sa_column=Column(String(7), nullable=False))
+    type_no: int = Field(sa_column=Column(Integer, nullable=False))
 
 
 class Relationships(BaseModel, table=True):
@@ -24,13 +30,11 @@ class Relationships(BaseModel, table=True):
 
     __tablename__ = "relationships"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(48), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    color_code = Column(String(7), nullable=False)
-    type_no = Column(
-        Integer, nullable=False, description="100번대 숫자부터 커스텀 관계타입"
-    )
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(sa_column=Column(String(48), nullable=False))
+    user_id: int = Field(sa_column=Column(Integer, nullable=True))
+    color_code: str = Field(sa_column=Column(String(7), nullable=False))
+    type_no: int = Field(sa_column=Column(Integer, nullable=False))
 
 
 class Records(BaseModel, table=True):
@@ -38,18 +42,14 @@ class Records(BaseModel, table=True):
 
     __tablename__ = "records"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    excel_id = Column(Integer, ForeignKey("excels.id"), nullable=True)
-    event_type_id = Column(Integer, ForeignKey("event_types.id"), nullable=False)
-    relationship_id = Column(Integer, ForeignKey("relationships.id"), nullable=False)
-    user_id = Column(Integer, nullable=False)
-    event_date = Column(DateTime, nullable=False)
-    name = Column(String(64), nullable=False)
-    phone = Column(String(64), nullable=False)
-    amount = Column(Integer, default=0)
-    status = Column(
-        Enum("A", "N", "U"),
-        default="A",
-        description="A : 참석 ( Attend ), B : 미참석 ( No-Show), U : 미정 ( Undecided )",
-    )
-    memo = Column(String(225), nullable=True)
+    id: int = Field(default=None, primary_key=True)
+    excel_id: int = Field(sa_column=Column(Integer, nullable=True))
+    event_type_id: int = Field(sa_column=Column(Integer, nullable=False))
+    relationship_id: int = Field(sa_column=Column(Integer, nullable=False))
+    user_id: int = Field(sa_column=Column(Integer, nullable=False))
+    event_date: datetime = Field(sa_column=Column(DateTime, nullable=False))
+    name: str = Field(sa_column=Column(String(64), nullable=False))
+    phone: str = Field(sa_column=Column(String(64), nullable=False))
+    amount: int = Field(sa_column=Column(Integer, default=0))
+    status: StatusEnum = Field(sa_column=Column(String(4), default="A"))
+    memo: str = Field(sa_column=Column(String(225), nullable=True))
