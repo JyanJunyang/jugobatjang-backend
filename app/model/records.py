@@ -25,10 +25,10 @@ class EventTypes(BaseModel, table=True):
     type_no: int = Field(sa_column=Column(Integer, nullable=False))
 
 
-class Relationships(BaseModel, table=True):
+class Relations(BaseModel, table=True):
     """관계 테이블"""
 
-    __tablename__ = "relationships"
+    __tablename__ = "relations"
 
     id: int = Field(default=None, primary_key=True)
     name: str = Field(sa_column=Column(String(48), nullable=False))
