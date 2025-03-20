@@ -1,8 +1,8 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import DateTime, Integer, String
-from sqlmodel import Column, Field
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlmodel import Field
 
 from app.model.base_model import BaseModel
 
@@ -26,7 +26,7 @@ class Users(BaseModel, table=True):
 
     __tablename__ = "users"
 
-    id: int = Field(primary_key=True)
+    id: int = Field(default=None, primary_key=True)
     email: str = Field(sa_column=Column(String(128), unique=True, nullable=False))
     password: str = Field(sa_column=Column(String(64), nullable=True))
     login_type: LoginTypeEnum = Field(sa_column=Column(String(64), nullable=False))
