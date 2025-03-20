@@ -56,6 +56,13 @@ class RequestDataMissingException(CustomException):
     DEFAULT_MESSAGE = "필수 요청 파라미터 누락"
 
 
+class DataCreationNotAllowedException(CustomException):
+    """데이터 생성 불가 오류"""
+
+    STATUS_CODE = status.HTTP_400_BAD_REQUEST
+    DEFAULT_MESSAGE = "데이터를 더 이상 생성할 수 없습니다."
+
+
 async def exception_handler(_, exc: Exception):
     """CustomException 예외 발생 시 처리"""
     return JSONResponse(
