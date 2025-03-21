@@ -1,4 +1,5 @@
-from typing import Any
+from functools import wraps
+from typing import Any, Callable
 
 from fastapi import Header
 from pydantic import BaseModel, Field
@@ -28,3 +29,21 @@ def get_headers(
     return BaseHeader(
         version=version, access_token=access_token, refresh_token=refresh_token
     )
+
+
+def add_token_to_response(func: Callable):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        """BaseResponse에서 token값이 있을 경우에만 반환하도록 데코레이터"""
+        response = await func(*args, **kwargs)
+
+        user_info = kwargs.get("user_info")
+        token = user_info.get("token") if user_info else None
+
+        if token:
+            response_data = {"data": response.data, "token": token}
+            return BaseResponse(data=response_data, status_code=200, message="success")
+
+        return response
+
+    return wrapper
