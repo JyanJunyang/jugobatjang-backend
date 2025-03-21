@@ -16,7 +16,7 @@ class BaseResponse(BaseModel):
 class BaseHeader(BaseModel):
     """기본 헤더 구조"""
 
-    version: str = Field(..., description="API 버전")
+    version: str = Field(default="1.0", description="API 버전")
     access_token: str = Field(..., description="accessToken")
     refresh_token: str = Field(..., description="refreshToken")
 
