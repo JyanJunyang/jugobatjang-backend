@@ -23,3 +23,9 @@ class EditRelationDTOModel(BaseModel):
     relation_id: int = Field(..., description="관계 id")
     name: str | None = Field(default=None, description="관계 이름")
     color_code: str | None = Field(default=None, description="관계 커스텀 색상")
+
+
+class DelteRelationDTOModel(BaseModel):
+    """관계 삭제 DTO"""
+
+    relation_id: int = Field(..., description="관계 id")

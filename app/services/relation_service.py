@@ -101,3 +101,11 @@ class RelationService:
             self.db.commit()
         except Exception as e:
             print(f"error : {str(e)}")
+
+    def delete_user_relation(self, relation_id: int):
+        """관계 삭제 메소드."""
+        try:
+            self.db.query(Relations).filter(Relations.id == relation_id).delete()
+            self.db.commit()
+        except Exception as e:
+            print(f"error : {str(e)}")

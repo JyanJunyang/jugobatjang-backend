@@ -5,7 +5,11 @@ from app.core.database import get_db
 from app.core.exceptions import InvalidRequestError, RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
-from app.schema.relation import CreateRelationDTOModel, EditRelationDTOModel
+from app.schema.relation import (
+    CreateRelationDTOModel,
+    DelteRelationDTOModel,
+    EditRelationDTOModel,
+)
 from app.services.relation_service import RelationService
 
 router = APIRouter(prefix="/relation", tags=["relation"])
@@ -70,3 +74,19 @@ async def edit_user_relation(
     )
 
     return BaseResponse(data=data)
+
+
+@router.post("/delete")
+@add_token_to_response
+async def edit_user_relation(
+    req: DelteRelationDTOModel,
+    user_info=Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    """관계 삭제 API"""
+    relation_id = req.relation_id
+
+    if relation_id <= 101:
+        raise InvalidRequestError()
+    RelationService(db=db).delete_user_relation(relation_id=relation_id)
+    return BaseResponse()
