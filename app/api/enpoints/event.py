@@ -43,7 +43,7 @@ async def get_user_events(
     return BaseResponse(data=data)
 
 
-@router.post("/edit")
+@router.patch("")
 @add_token_to_response
 async def edit_user_event(
     req: EditEventDTOModel,
@@ -68,7 +68,7 @@ async def edit_user_event(
     return BaseResponse(data=data)
 
 
-@router.post("/delete")
+@router.delete("")
 @add_token_to_response
 async def edit_user_event(
     req: DelteEventDTOModel,

@@ -49,7 +49,7 @@ async def get_user_relations(
     return BaseResponse(data=data)
 
 
-@router.post("/edit")
+@router.patch("")
 @add_token_to_response
 async def edit_user_relation(
     req: EditRelationDTOModel,
@@ -77,7 +77,7 @@ async def edit_user_relation(
     return BaseResponse(data=data)
 
 
-@router.post("/delete")
+@router.delete("")
 @add_token_to_response
 async def edit_user_relation(
     req: DelteRelationDTOModel,
