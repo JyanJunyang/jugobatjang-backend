@@ -63,7 +63,7 @@ class RelationService:
             relations = Relations(user_id=user_id, name=name, color_code=color_code)
             self.db.add(relations)
             self.db.flush()
-            self.db.refresh(relations)
+            relations.type_no = relations.id
             self.db.commit()
             return relations.id
         except Exception as e:

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.enpoints.auth import router as auth_router
+from app.api.enpoints.event import router as event_router
 from app.api.enpoints.record import router as record_router
 from app.api.enpoints.relation import router as relation_router
 from app.core.exceptions import (
@@ -22,6 +23,7 @@ app = FastAPI(
 app.include_router(auth_router)
 app.include_router(record_router)
 app.include_router(relation_router)
+app.include_router(event_router)
 
 app.add_exception_handler(DuplicatedErrorException, exception_handler)
 app.add_exception_handler(UnknownErrorException, exception_handler)

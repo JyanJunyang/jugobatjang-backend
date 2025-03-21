@@ -16,6 +16,7 @@ router = APIRouter(prefix="/relation", tags=["relation"])
 
 
 @router.post("")
+@add_token_to_response
 async def create_new_relation(
     req: CreateRelationDTOModel,
     user_info=Depends(verify_token),
