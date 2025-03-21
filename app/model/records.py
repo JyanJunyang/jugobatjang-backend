@@ -16,7 +16,7 @@ class StatusEnum(str, Enum):
 class EventTypes(BaseModel, table=True):
     """경조사 타입 테이블."""
 
-    __tablename__ = "event_types"
+    __tablename__ = "eventtypes"
 
     id: int = Field(default=None, primary_key=True)
     name: str = Field(sa_column=Column(String(48), nullable=False))
