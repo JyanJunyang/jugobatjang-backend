@@ -23,3 +23,9 @@ class EditEventDTOModel(BaseModel):
     event_id: int = Field(..., description="경조사 id")
     name: str | None = Field(default=None, description="경조사 이름")
     color_code: str | None = Field(default=None, description="경조사 커스텀 색상")
+
+
+class DelteEventDTOModel(BaseModel):
+    """경조사 삭제 DTO"""
+
+    event_id: int = Field(..., description="경조사 id")

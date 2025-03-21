@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.core.exceptions import InvalidRequestError, RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
-from app.schema.event import CreateEventDTOModel, EditEventDTOModel
+from app.schema.event import CreateEventDTOModel, DelteEventDTOModel, EditEventDTOModel
 from app.services.event_service import EventService
 
 router = APIRouter(prefix="/event", tags=["event"])
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/event", tags=["event"])
 
 @router.post("")
 @add_token_to_response
-async def create_new_relation(
+async def create_new_event(
     req: CreateEventDTOModel,
     user_info=Depends(verify_token),
     db: Session = Depends(get_db),
@@ -33,7 +33,7 @@ async def create_new_relation(
 
 @router.get("")
 @add_token_to_response
-async def get_user_relations(
+async def get_user_events(
     user_info=Depends(verify_token), db: Session = Depends(get_db)
 ):
     """유저의 관계 조회하는 API."""
@@ -45,7 +45,7 @@ async def get_user_relations(
 
 @router.post("/edit")
 @add_token_to_response
-async def edit_user_relation(
+async def edit_user_event(
     req: EditEventDTOModel,
     user_info=Depends(verify_token),
     db: Session = Depends(get_db),
@@ -66,3 +66,19 @@ async def edit_user_relation(
     data = event.edit_user_event(event_id=event_id, name=name, color_code=color_code)
 
     return BaseResponse(data=data)
+
+
+@router.post("/delete")
+@add_token_to_response
+async def edit_user_event(
+    req: DelteEventDTOModel,
+    user_info=Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    """관계 삭제 API"""
+    event_id = req.event_id
+
+    if event_id <= 101:
+        raise InvalidRequestError()
+    EventService(db=db).delete_user_event(event_id=event_id)
+    return BaseResponse()
