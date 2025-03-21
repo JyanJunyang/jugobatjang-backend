@@ -55,6 +55,11 @@ class RequestDataMissingException(CustomException):
     STATUS_CODE = status.HTTP_400_BAD_REQUEST
     DEFAULT_MESSAGE = "필수 요청 파라미터 누락"
 
+    def __init__(self, detail: Optional[str] = None):
+        super().__init__(
+            detail=f"{self.DEFAULT_MESSAGE} : {detail}" or self.DEFAULT_MESSAGE
+        )
+
 
 class DataCreationNotAllowedException(CustomException):
     """데이터 생성 불가 오류"""
