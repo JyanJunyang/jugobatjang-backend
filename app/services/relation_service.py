@@ -78,6 +78,8 @@ class RelationService:
         )
 
         return [
-            UserRelationDTOModel(id=rel.id, name=rel.name, color_code=rel.color_code)
+            UserRelationDTOModel(
+                relation_id=rel.id, name=rel.name, color_code=rel.color_code
+            )
             for rel in relations
         ]
