@@ -7,6 +7,7 @@ from app.core.exceptions import (
     DuplicatedErrorException,
 )
 from app.model.records import EventTypes
+from app.schema.event import UserEventDTOModel
 from app.util.limit_checker import can_add_more
 
 MAX_EVENTTYPE_COUNT = configs.MAX_EVENTTYPE_COUNT
@@ -69,3 +70,16 @@ class EventService:
         except Exception as e:
             self.db.rollback()
             print(str(e))
+
+    def get_user_events(self, user_id: int):
+        """유저의 경조사 조회."""
+        events = (
+            self.db.query(EventTypes.id, EventTypes.name, EventTypes.color_code)
+            .filter(or_(EventTypes.user_id == user_id, EventTypes.user_id == None))
+            .all()
+        )
+
+        return [
+            UserEventDTOModel(event_id=e.id, name=e.name, color_code=e.color_code)
+            for e in events
+        ]

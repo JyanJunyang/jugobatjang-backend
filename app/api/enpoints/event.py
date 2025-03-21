@@ -28,3 +28,15 @@ async def create_new_relation(
     res = event.insert_new_event(user_id=user_id, name=name, color_code=color_code)
 
     return BaseResponse(data=res)
+
+
+@router.get("")
+@add_token_to_response
+async def get_user_relations(
+    user_info=Depends(verify_token), db: Session = Depends(get_db)
+):
+    """유저의 관계 조회하는 API."""
+    user_id = user_info.get("user_id")
+    event = EventService(db=db)
+    data = event.get_user_events(user_id=user_id)
+    return BaseResponse(data=data)

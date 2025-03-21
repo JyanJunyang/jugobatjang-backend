@@ -7,3 +7,11 @@ class CreateEventDTOModel(BaseModel):
 
     name: str = Field(..., description="경조사 이름")
     color_code: str = Field(..., description="경조사 커스텀 색상")
+
+
+class UserEventDTOModel(BaseModel):
+    """유저의 경조사 DTO"""
+
+    event_id: int = Field(..., description="경조사 id")
+    name: str = Field(..., description="경조사 이름")
+    color_code: str = Field(..., description="경조사 커스텀 색상")
