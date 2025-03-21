@@ -40,6 +40,7 @@ class Configs(BaseSettings):
     REFRESH_SECRET_KEY: str = _getenv("REFRESH_SECRET_KEY")
     ALGORITHM: str = _getenv("ALGORITHM")
     MAX_RELATION_COUNT: str = _getenv("MAX_RELATION_COUNT")
+    MAX_EVENTTYPE_COUNT: str = _getenv("MAX_EVENTTYPE_COUNT")
 
 
 configs = Configs()
