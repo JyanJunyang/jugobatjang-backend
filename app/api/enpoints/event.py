@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 
 from app.core.database import get_db
+from app.core.exceptions import InvalidRequestError, RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
-from app.schema.event import CreateEventDTOModel
+from app.schema.event import CreateEventDTOModel, EditEventDTOModel
 from app.services.event_service import EventService
 
 router = APIRouter(prefix="/event", tags=["event"])
@@ -39,4 +40,29 @@ async def get_user_relations(
     user_id = user_info.get("user_id")
     event = EventService(db=db)
     data = event.get_user_events(user_id=user_id)
+    return BaseResponse(data=data)
+
+
+@router.post("/edit")
+@add_token_to_response
+async def edit_user_relation(
+    req: EditEventDTOModel,
+    user_info=Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    """관계 수정 로직"""
+
+    event_id, name, color_code = req.model_dump().values()
+
+    if name is None and color_code is None:
+        raise RequestDataMissingException(
+            "name 또는 color_code 필드 중 하나는 반드시 포함되어야 합니다."
+        )
+
+    if event_id <= 101:
+        raise InvalidRequestError()
+
+    event = EventService(db=db)
+    data = event.edit_user_event(event_id=event_id, name=name, color_code=color_code)
+
     return BaseResponse(data=data)

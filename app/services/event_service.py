@@ -83,3 +83,18 @@ class EventService:
             UserEventDTOModel(event_id=e.id, name=e.name, color_code=e.color_code)
             for e in events
         ]
+
+    def edit_user_event(self, event_id: int, name: str | None, color_code: str | None):
+        """관계 업데이트 메소드."""
+        update_data = {
+            key: value
+            for key, value in {"name": name, "color_code": color_code}.items()
+            if value is not None
+        }
+        try:
+            self.db.query(EventTypes).filter(EventTypes.id == event_id).update(
+                update_data
+            )
+            self.db.commit()
+        except Exception as e:
+            print(f"error : {str(e)}")
