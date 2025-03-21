@@ -71,6 +71,7 @@ class RelationService:
             print(str(e))
 
     def get_user_relations(self, user_id: int):
+        """유저의 관계 조회."""
         relations = (
             self.db.query(Relations.id, Relations.name, Relations.color_code)
             .filter(or_(Relations.user_id == user_id, Relations.user_id == None))
@@ -83,3 +84,20 @@ class RelationService:
             )
             for rel in relations
         ]
+
+    def edit_user_relations(
+        self, relation_id: int, name: str | None, color_code: str | None
+    ):
+        """관계 업데이트 메소드."""
+        update_data = {
+            key: value
+            for key, value in {"name": name, "color_code": color_code}.items()
+            if value is not None
+        }
+        try:
+            self.db.query(Relations).filter(Relations.id == relation_id).update(
+                update_data
+            )
+            self.db.commit()
+        except Exception as e:
+            print(f"error : {str(e)}")
