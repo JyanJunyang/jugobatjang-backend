@@ -1,6 +1,8 @@
 from contextlib import contextmanager
-from typing import Generator
+from typing import Generator, List, Type, TypeVar
 
+import pymysql
+from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -10,7 +12,8 @@ engine = create_engine(configs.DATABASE_URI, echo=True)
 
 SessionLocal = sessionmaker(bind=engine, class_=Session, expire_on_commit=False)
 
-import pymysql
+
+T = TypeVar("T", bound=BaseModel)
 
 
 @contextmanager
@@ -32,3 +35,8 @@ def get_db() -> Generator:
     """API 호출시 발동될 메소드"""
     with start_session() as session:
         yield session
+
+
+def convert_rows_to_dict_list(query_result, dto_class: Type[T]) -> List[T]:
+    """SQLAlchemy Rowresult -> Dict List 형태로 형변환 해주는 메소드."""
+    return [dto_class(**dict(row._mapping)) for row in query_result]
