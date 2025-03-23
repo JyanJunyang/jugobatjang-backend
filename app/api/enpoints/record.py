@@ -46,3 +46,16 @@ async def get_user_records(
         relations=relations,
     )
     return BaseResponse(data=records)
+
+
+@router.get("{id}")
+@add_token_to_response
+async def get_record_detail(
+    id: str,
+    user_info=Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    """기록 상세 조회"""
+    user_id = user_info.get("user_id")
+    record = RecordService(db=db).get_record_detail(user_id=user_id, record_id=id)
+    return BaseResponse(data=record)

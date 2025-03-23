@@ -1,10 +1,19 @@
 from typing import List
 
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm.session import Session
 
-from app.core.database import convert_page_to_offset, convert_rows_to_dict_list
+from app.core.database import (
+    convert_page_to_offset,
+    convert_row_to_dict,
+    convert_rows_to_dict_list,
+)
 from app.model.records import EventTypes, Records, Relations
-from app.schema.records import CreateRecordDTOModel, RecordSearchResponseDTOModel
+from app.schema.records import (
+    CreateRecordDTOModel,
+    RecordDetailDTOModel,
+    RecordSearchResponseDTOModel,
+)
 
 
 class RecordService:
@@ -69,5 +78,38 @@ class RecordService:
             return convert_rows_to_dict_list(
                 query_result=res, dto_class=RecordSearchResponseDTOModel
             )
+        except Exception as e:
+            print(str(e))
+
+    def get_record_detail(self, user_id: int, record_id: int):
+        """기록 상세조회하는 메소드."""
+        try:
+            res = (
+                self.db.query(
+                    Records.id,
+                    Records.name,
+                    Records.amount,
+                    Records.is_received,
+                    Records.phone,
+                    Records.status,
+                    Records.memo,
+                    Records.event_date,
+                    Records.created_at,
+                    EventTypes.id.label("event_type_id"),
+                    EventTypes.name.label("event_type_name"),
+                    EventTypes.color_code.label("event_type_color_code"),
+                    Relations.id.label("relation_id"),
+                    Relations.name.label("relation_name"),
+                    Relations.color_code.label("relation_color_code"),
+                )
+                .join(EventTypes, Records.event_type_id == EventTypes.id, isouter=True)
+                .join(Relations, Records.relation_id == Relations.id, isouter=True)
+                .filter(
+                    Records.id == record_id,
+                    Records.user_id == user_id,
+                )
+            ).first()
+
+            return convert_row_to_dict(res, RecordDetailDTOModel)
         except Exception as e:
             print(str(e))

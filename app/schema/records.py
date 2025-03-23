@@ -23,7 +23,27 @@ class RecordSearchResponseDTOModel(BaseModel):
 
     id: int = Field(..., description="기록 ID")
     name: str = Field(..., description="기록 이름")
+    amount: int = Field(..., description="금액")
+    is_received: int = Field(..., description="받은내역 : 1, 준 내역 : 0")
     event_date: datetime = Field(..., description="경조사 일정")
     created_at: datetime = Field(..., description="생성날짜")
     event_type_name: str = Field(..., description="경조사 종류 이름")
     relation_name: str = Field(..., description="관계 이름")
+
+
+class RecordDetailDTOModel(BaseModel):
+    id: int = Field(..., description="기록 ID")
+    name: str = Field(..., description="기록 이름")
+    amount: int = Field(..., description="금액")
+    is_received: int = Field(..., description="받은내역 : 1, 준 내역 : 0")
+    phone: str | None = Field(default=None, description="대상자의 핸드폰 번호")
+    status: str | None = Field(default=None, description="참여 여부 ")
+    memo: str | None = Field(default=None, description="메모")
+    event_date: datetime = Field(..., description="경조사 일정")
+    created_at: datetime = Field(..., description="생성날짜")
+    event_type_id: int = Field(..., description="경조사 ID")
+    event_type_name: str = Field(..., description="경조사 종류 이름")
+    event_type_color_code: str = Field(..., description="경조사 커스텀 색상")
+    relation_id: int = Field(..., description="관계 ID")
+    relation_name: str = Field(..., description="관계 이름")
+    relation_color_code: str = Field(..., description="관계 커스텀 색상")
