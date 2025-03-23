@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from fastapi.encoders import jsonable_encoder
@@ -8,6 +9,7 @@ from app.core.database import (
     convert_row_to_dict,
     convert_rows_to_dict_list,
 )
+from app.core.exceptions import NotFoundError
 from app.model.records import EventTypes, Records, Relations
 from app.schema.records import (
     CreateRecordDTOModel,
@@ -111,5 +113,53 @@ class RecordService:
             ).first()
 
             return convert_row_to_dict(res, RecordDetailDTOModel)
+        except Exception as e:
+            print(str(e))
+
+    def edit_user_record(
+        self,
+        user_id: int,
+        id: int,
+        name: str | None = None,
+        amount: int | None = None,
+        is_received: int | None = None,
+        phone: str | None = None,
+        status: str | None = None,
+        memo: str | None = None,
+        event_date: datetime | None = None,
+        excel_id: int | None = None,
+        event_type_id: int | None = None,
+        relation_id: int | None = None,
+    ):
+        """기록 수정하는 메소드."""
+        try:
+            record = (
+                self.db.query(Records)
+                .filter(Records.id == id, Records.user_id == user_id)
+                .first()
+            )
+
+            if record is None:
+                raise NotFoundError()
+
+            update_data = {
+                "name": name,
+                "amount": amount,
+                "is_received": is_received,
+                "phone": phone,
+                "status": status,
+                "memo": memo,
+                "event_date": event_date,
+                "excel_id": excel_id,
+                "event_type_id": event_type_id,
+                "relation_id": relation_id,
+            }
+
+            for key, value in update_data.items():
+                if value is not None:
+                    setattr(record, key, value)
+
+            self.db.commit()
+
         except Exception as e:
             print(str(e))

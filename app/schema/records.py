@@ -47,3 +47,19 @@ class RecordDetailDTOModel(BaseModel):
     relation_id: int = Field(..., description="관계 ID")
     relation_name: str = Field(..., description="관계 이름")
     relation_color_code: str = Field(..., description="관계 커스텀 색상")
+
+
+class EditRecordDTOModel(BaseModel):
+    id: int = Field(..., description="기록 ID")
+    name: str | None = Field(default=None, description="기록 이름")
+    amount: int | None = Field(default=None, description="금액")
+    is_received: int | None = Field(
+        default=None, description="받은내역 : 1, 준 내역 : 0"
+    )
+    phone: str | None = Field(default=None, description="대상자의 핸드폰 번호")
+    status: str | None = Field(default=None, description="참여 여부 ")
+    memo: str | None = Field(default=None, description="메모")
+    event_date: datetime = Field(default=None, description="경조사 일정")
+    excel_id: int | None = Field(None, description="Excel ID")
+    event_type_id: int | None = Field(default=None, description="경조사 ID")
+    relation_id: int | None = Field(default=None, description="관계 ID")
