@@ -1,0 +1,111 @@
+from sqlalchemy import and_, or_
+from sqlalchemy.orm.session import Session
+
+from app.core.config import configs
+from app.core.exceptions import (
+    DataCreationNotAllowedException,
+    DuplicatedErrorException,
+)
+from app.model.records import Relations
+from app.schema.relation import UserRelationDTOModel
+from app.util.limit_checker import can_add_more
+
+MAX_RELATION_COUNT = configs.MAX_RELATION_COUNT
+
+
+class RelationService:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def is_relation_exists(self, user_id: int, name: str):
+        """이미 추가하려는 관계가 있는지 체크하는 메소드."""
+        try:
+            res = (
+                self.db.query(Relations.id)
+                .filter(
+                    or_(
+                        and_(Relations.name == name, Relations.user_id == user_id),
+                        and_(Relations.name == name, Relations.user_id == None),
+                    )
+                )
+                .first()
+            )
+
+            if res is not None:
+                raise DuplicatedErrorException()
+
+        except DuplicatedErrorException:
+            raise
+        except Exception as e:
+            print(str(e))
+
+    def allow_add_more(self, user_id: int):
+        """관계데이터를 더 추가해도 되는지 체크하는 메소드."""
+        try:
+            count = (
+                self.db.query(Relations.id)
+                .filter(or_(Relations.user_id == user_id, Relations.user_id == None))
+                .count()
+            )
+
+            if not can_add_more(count, int(MAX_RELATION_COUNT)):
+                raise DataCreationNotAllowedException()
+
+        except DataCreationNotAllowedException:
+            raise
+
+        except Exception as e:
+            print(f"{str(e)}")
+
+    def insert_new_relation(self, user_id: int, name: str, color_code: str):
+        """새로운 관계 추가"""
+        try:
+            relations = Relations(user_id=user_id, name=name, color_code=color_code)
+            self.db.add(relations)
+            self.db.flush()
+            relations.type_no = relations.id
+            self.db.commit()
+            return relations.id
+        except Exception as e:
+            self.db.rollback()
+            print(str(e))
+
+    def get_user_relations(self, user_id: int):
+        """유저의 관계 조회."""
+        relations = (
+            self.db.query(Relations.id, Relations.name, Relations.color_code)
+            .filter(or_(Relations.user_id == user_id, Relations.user_id == None))
+            .all()
+        )
+
+        return [
+            UserRelationDTOModel(
+                relation_id=rel.id, name=rel.name, color_code=rel.color_code
+            )
+            for rel in relations
+        ]
+
+    def edit_user_relations(
+        self, relation_id: int, name: str | None, color_code: str | None
+    ):
+        """관계 업데이트 메소드."""
+        update_data = {
+            key: value
+            for key, value in {"name": name, "color_code": color_code}.items()
+            if value is not None
+        }
+        try:
+            self.db.query(Relations).filter(Relations.id == relation_id).update(
+                update_data
+            )
+            self.db.commit()
+        except Exception as e:
+            print(f"error : {str(e)}")
+
+    def delete_user_relation(self, relation_id: int):
+        """관계 삭제 메소드."""
+        try:
+            self.db.query(Relations).filter(Relations.id == relation_id).delete()
+            self.db.commit()
+        except Exception as e:
+            print(f"error : {str(e)}")
