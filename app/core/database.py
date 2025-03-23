@@ -2,6 +2,7 @@ from contextlib import contextmanager
 from typing import Generator, List, Type, TypeVar
 
 import pymysql
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
@@ -38,8 +39,15 @@ def get_db() -> Generator:
 
 
 def convert_rows_to_dict_list(query_result, dto_class: Type[T]) -> List[T]:
-    """SQLAlchemy Rowresult -> Dict List 형태로 형변환 해주는 메소드."""
+    """SQLAlchemy Rowresult -> 원하는 BaseModel List 형태로 형변환 해주는 메소드."""
     return [dto_class(**dict(row._mapping)) for row in query_result]
+
+
+def convert_row_to_dict(query_result, dto_class: Type[T]):
+    """SQLAlchemy Row result -> 원하는 BaseModel 형태로 형변환 해주는 메소드."""
+    res_dict = dict(query_result._mapping)
+    result = dto_class(**res_dict)
+    return jsonable_encoder(result)
 
 
 def convert_page_to_offset(size: int, page: int):
