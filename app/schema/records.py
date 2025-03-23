@@ -16,3 +16,14 @@ class CreateRecordDTOModel(BaseModel):
     excel_id: int | None = Field(None, description="Excel ID")
     memo: str | None = Field(None, description="메모")
     phone: str | None = Field(None, description="핸드폰 번호")
+
+
+class RecordSearchResponseDTOModel(BaseModel):
+    """경조사 장부 조회 Response DTO"""
+
+    id: int = Field(..., description="기록 ID")
+    name: str = Field(..., description="기록 이름")
+    event_date: datetime = Field(..., description="경조사 일정")
+    created_at: datetime = Field(..., description="생성날짜")
+    event_type_name: str = Field(..., description="경조사 종류 이름")
+    relation_name: str = Field(..., description="관계 이름")
