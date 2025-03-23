@@ -163,3 +163,11 @@ class RecordService:
 
         except Exception as e:
             print(str(e))
+
+    def delete_user_record(self, record_id: int):
+        """기록 삭제 메소드."""
+        try:
+            self.db.query(Records).filter(Records.id == record_id).delete()
+            self.db.commit()
+        except Exception as e:
+            print(f"error : {str(e)}")

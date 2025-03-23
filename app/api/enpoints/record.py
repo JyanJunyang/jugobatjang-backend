@@ -49,7 +49,7 @@ async def get_user_records(
     return BaseResponse(data=records)
 
 
-@router.get("{id}")
+@router.get("/{id}")
 @add_token_to_response
 async def get_record_detail(
     id: str,
@@ -119,4 +119,15 @@ async def edit_user_record(
         relation_id=relation_id,
     )
 
-    return BaseResponse(data=None)
+    return BaseResponse(data=id)
+
+
+@router.delete("/{id}")
+@add_token_to_response
+async def delete_user_record(
+    id: str,
+    user_info=Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    RecordService(db=db).delete_user_record(record_id=id)
+    return BaseResponse(data=id)
