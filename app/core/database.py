@@ -40,3 +40,8 @@ def get_db() -> Generator:
 def convert_rows_to_dict_list(query_result, dto_class: Type[T]) -> List[T]:
     """SQLAlchemy Rowresult -> Dict List 형태로 형변환 해주는 메소드."""
     return [dto_class(**dict(row._mapping)) for row in query_result]
+
+
+def convert_page_to_offset(size: int, page: int):
+    """파라미터로 받은 paging 파라미터, offset 값으로 변환"""
+    return (page - 1) * size
