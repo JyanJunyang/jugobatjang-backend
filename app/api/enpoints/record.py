@@ -5,6 +5,7 @@ from app.core.database import get_db
 from app.core.exceptions import RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
+from app.schema.calendar import CreateCalendarDTOModel
 from app.schema.records import CreateRecordDTOModel, EditRecordDTOModel
 from app.services.record_service import RecordService
 
@@ -20,8 +21,9 @@ async def create_new_record(
 ):
     """장부 기록하는 API"""
     user_id = user_info.get("user_id")
-    record = RecordService(db=db).insert_new_record(req=req, user_id=user_id)
-    return BaseResponse(data=record)
+    record_id = RecordService(db=db).insert_new_record(req=req, user_id=user_id)
+
+    return BaseResponse(data=record_id)
 
 
 @router.get("")

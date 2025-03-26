@@ -1,7 +1,5 @@
 from datetime import datetime
-from typing import List
 
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm.session import Session
 
 from app.core.database import (
@@ -10,7 +8,9 @@ from app.core.database import (
     convert_rows_to_dict_list,
 )
 from app.core.exceptions import NotFoundError
+from app.model.calendar import Calendar
 from app.model.records import EventTypes, Records, Relations
+from app.schema.calendar import CreateCalendarDTOModel
 from app.schema.records import (
     CreateRecordDTOModel,
     RecordDetailDTOModel,
@@ -23,14 +23,51 @@ class RecordService:
         self.db = db
 
     def insert_new_record(self, req: CreateRecordDTOModel, user_id: int):
-        """경조사 기록 생성 메소드."""
+        """경조사 기록 생성 및 캘린더 생성 메소드."""
+
         try:
             record = Records(**req.model_dump(), user_id=user_id)
             self.db.add(record)
             self.db.flush()
             record_id = record.id
             self.db.commit()
+
+            # 캘린더 생성
+            self.insert_new_calendar_by_record(req, record_id, user_id)
+
             return record_id
+
+        except Exception as e:
+            self.db.rollback()
+            print(f"error : {str(e)}")
+
+    def insert_new_calendar_by_record(
+        self, req: CreateRecordDTOModel, record_id: int, user_id: int
+    ):
+        """캘린더 데이터 생성 메소드."""
+
+        calendar_date = req.calendar_date
+        if calendar_date:
+            peer_name = req.peer_name
+            event_type_id = req.event_type_id
+            event_name = self.get_event_name_by_id(event_type_id)
+            title = f"{peer_name} {event_name}"
+
+            calendar = CreateCalendarDTOModel(
+                title=title, date=calendar_date, user_id=user_id, record_id=record_id
+            )
+            calendar = Calendar(**calendar.model_dump())
+            self.db.add(calendar)
+            self.db.commit()
+
+    def get_event_name_by_id(self, event_type_id: int):
+        """id값으로 경조사 이름 조회하는 메소드."""
+        try:
+            return (
+                self.db.query(EventTypes.name)
+                .filter(EventTypes.id == event_type_id)
+                .scalar()
+            )
         except Exception as e:
             print(f"error : {str(e)}")
 
