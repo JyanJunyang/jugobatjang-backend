@@ -88,12 +88,14 @@ class RecordService:
             query = (
                 self.db.query(
                     Records.id,
-                    Records.name,
                     Records.amount,
-                    Records.event_date,
-                    Records.created_at,
+                    Records.date,
+                    Records.peer_name,
+                    Records.is_received,
                     EventTypes.name.label("event_type_name"),
+                    EventTypes.color_code.label("event_color_code"),
                     Relations.name.label("relation_name"),
+                    Relations.color_code.label("relation_color_code"),
                 )
                 .join(EventTypes, Records.event_type_id == EventTypes.id, isouter=True)
                 .join(Relations, Records.relation_id == Relations.id, isouter=True)
@@ -113,7 +115,6 @@ class RecordService:
             offset = convert_page_to_offset(size=size, page=page)
             query = query.limit(size).offset(offset)
             res = query.all()
-
             return convert_rows_to_dict_list(
                 query_result=res, dto_class=RecordSearchResponseDTOModel
             )
@@ -126,13 +127,12 @@ class RecordService:
             res = (
                 self.db.query(
                     Records.id,
-                    Records.name,
                     Records.amount,
                     Records.is_received,
                     Records.phone,
                     Records.status,
                     Records.memo,
-                    Records.event_date,
+                    Records.date,
                     Records.created_at,
                     EventTypes.id.label("event_type_id"),
                     EventTypes.name.label("event_type_name"),

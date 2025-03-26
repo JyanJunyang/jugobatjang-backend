@@ -23,13 +23,14 @@ class RecordSearchResponseDTOModel(BaseModel):
     """경조사 장부 조회 Response DTO"""
 
     id: int = Field(..., description="기록 ID")
-    name: str = Field(..., description="기록 이름")
     amount: int = Field(..., description="금액")
     is_received: int = Field(..., description="받은내역 : 1, 준 내역 : 0")
-    event_date: datetime = Field(..., description="경조사 일정")
-    created_at: datetime = Field(..., description="생성날짜")
+    date: datetime = Field(..., description="금액을 주거나 받은 날짜")
+    peer_name: str = Field(..., description="금액을 주거나 받은 상대방의 이름")
     event_type_name: str = Field(..., description="경조사 종류 이름")
+    event_color_code: str = Field(..., description="경조사 커스텀 색상")
     relation_name: str = Field(..., description="관계 이름")
+    relation_color_code: str = Field(..., description="관계 커스텀 색상")
 
 
 class RecordDetailDTOModel(BaseModel):
