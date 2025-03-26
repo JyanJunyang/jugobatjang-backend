@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, Integer, SmallInteger, String
 from sqlmodel import Field
 
 from app.model.base_model import BaseModel
@@ -45,11 +45,12 @@ class Records(BaseModel, table=True):
     id: int = Field(default=None, primary_key=True)
     excel_id: int = Field(sa_column=Column(Integer, nullable=True))
     event_type_id: int = Field(sa_column=Column(Integer, nullable=False))
-    relationship_id: int = Field(sa_column=Column(Integer, nullable=False))
+    relation_id: int = Field(sa_column=Column(Integer, nullable=False))
     user_id: int = Field(sa_column=Column(Integer, nullable=False))
+    is_received: int = Field(sa_column=Column(SmallInteger, nullable=False))
     event_date: datetime = Field(sa_column=Column(DateTime, nullable=False))
     name: str = Field(sa_column=Column(String(64), nullable=False))
-    phone: str = Field(sa_column=Column(String(64), nullable=False))
+    phone: str = Field(sa_column=Column(String(64), nullable=True))
     amount: int = Field(sa_column=Column(Integer, default=0))
     status: StatusEnum = Field(sa_column=Column(String(4), default="A"))
     memo: str = Field(sa_column=Column(String(225), nullable=True))
