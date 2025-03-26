@@ -6,7 +6,7 @@ from app.core.exceptions import RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
 from app.schema.calendar import CreateCalendarDTOModel
-from app.schema.records import CreateRecordDTOModel, EditRecordDTOModel
+from app.schema.records import CreateRecordDTOModel, EditRecordDTOModel, EditRecordModel
 from app.services.record_service import RecordService
 
 router = APIRouter(prefix="/record", tags=["record"])
@@ -73,29 +73,31 @@ async def edit_user_record(
 ):
     """기록 수정하는 API"""
     (
-        id,
-        name,
         amount,
         is_received,
         phone,
         status,
         memo,
-        event_date,
+        peer_name,
+        date,
+        calendar_date,
         excel_id,
         event_type_id,
         relation_id,
+        id,
     ) = req.model_dump().values()
 
     if all(
         value is None
         for value in [
-            name,
             amount,
             is_received,
             phone,
             status,
             memo,
-            event_date,
+            peer_name,
+            date,
+            calendar_date,
             excel_id,
             event_type_id,
             relation_id,
@@ -107,18 +109,21 @@ async def edit_user_record(
 
     user_id = user_info.get("user_id")
     RecordService(db=db).edit_user_record(
+        record_id=id,
         user_id=user_id,
-        id=id,
-        name=name,
-        amount=amount,
-        is_received=is_received,
-        phone=phone,
-        status=status,
-        memo=memo,
-        event_date=event_date,
-        excel_id=excel_id,
-        event_type_id=event_type_id,
-        relation_id=relation_id,
+        edit_data=EditRecordModel(
+            amount=amount,
+            is_received=is_received,
+            phone=phone,
+            status=status,
+            memo=memo,
+            date=date,
+            peer_name=peer_name,
+            calendar_date=calendar_date,
+            excel_id=excel_id,
+            event_type_id=event_type_id,
+            relation_id=relation_id,
+        ),
     )
 
     return BaseResponse(data=id)

@@ -58,6 +58,7 @@ class Records(BaseModel, table=True):
     calendar_date: datetime = Field(
         sa_column=Column(DateTime, nullable=True, comment="캘린더 일정")
     )
+    peer_name: str = Field(sa_column=Column(String(40), nullable=True))
     excel_id: int = Field(sa_column=Column(Integer, nullable=True))
     phone: str = Field(sa_column=Column(String(64), nullable=True))
     amount: int = Field(sa_column=Column(Integer, default=0))
