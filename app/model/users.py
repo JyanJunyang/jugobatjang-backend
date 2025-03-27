@@ -24,7 +24,7 @@ class GenderEnum(str, Enum):
 class Users(BaseModel, table=True):
     """유저 테이블"""
 
-    __tablename__ = "users"
+    __tablename__ = "Users"
 
     id: int = Field(default=None, primary_key=True)
     email: str = Field(sa_column=Column(String(128), unique=True, nullable=False))

@@ -22,10 +22,10 @@ class UserService:
 
     async def get_user_id(self, social_id: str):
         """social_id값으로 user_id값 반환하는 메소드."""
-        user_id = self.db.query(Users.id).filter(Users.social_id == social_id).scalar()
-        if user_id is None:
+        user = self.db.query(Users.id).filter(Users.social_id == social_id).first()
+        if user is None:
             raise NotFoundError(detail="해당 사용자를 찾을 수 없습니다.")
-        return user_id
+        return user.id
 
     async def signup_new_user(self, user_data):
         """신규유저 생성 메소드."""
