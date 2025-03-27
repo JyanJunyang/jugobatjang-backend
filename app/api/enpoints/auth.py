@@ -1,11 +1,7 @@
-from fastapi import APIRouter, Depends, Header, Request
+from fastapi import APIRouter, Depends, Request
 
 from app.core.database import get_db
-from app.core.security import (
-    create_jwt_access_token,
-    create_jwt_refresh_token,
-    verify_token,
-)
+from app.core.security import create_jwt_token, verify_token
 from app.schema.auth import AuthDTOModel
 from app.schema.base import BaseHeader, BaseResponse, get_headers
 from app.services.auth_service import AuthService
@@ -34,6 +30,7 @@ async def sign_in(
 ):
     """소셜ID값으로 회원여부를 확인하고, 없으면 가입 후 자체 JWT 발급하는 API."""
     user = UserService(db=db)
+    platform = headers.platform
     is_registered = await user.is_registered_user(social_id=req.social_id)
 
     auth = AuthService()
@@ -52,10 +49,12 @@ async def sign_in(
     data = {
         "sub": f"{user_id}",
     }
-    access_token = create_jwt_access_token(data=data)
-    refresh_token = create_jwt_refresh_token(data=data)
+    access_token, refresh_token = create_jwt_token(data=data, platform=platform)
 
-    token = {**access_token, **refresh_token}
+    token = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
 
     return BaseResponse(status_code=200, data=token)
 
