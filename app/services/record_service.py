@@ -6,6 +6,7 @@ from app.core.database import (
     convert_page_to_offset,
     convert_row_to_dict,
     convert_rows_to_dict_list,
+    get_order_by_clause,
 )
 from app.core.exceptions import NotFoundError
 from app.model.calendar import Calendar
@@ -81,11 +82,15 @@ class RecordService:
         is_received: int,
         page: int,
         size: int,
+        order_by: str,
+        direction: str,
         event_types: str | None = None,
         relations: str | None = None,
     ):
         """유저의 경조사 기록 조회하는 메소드."""
         try:
+            order_func = get_order_by_clause(Records, order_by, direction)
+
             query = (
                 self.db.query(
                     Records.id,
@@ -104,6 +109,7 @@ class RecordService:
                     Records.user_id == user_id,
                     Records.is_received == is_received,
                 )
+                .order_by(order_func)
             )
 
             if event_types:

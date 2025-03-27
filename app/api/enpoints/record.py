@@ -5,7 +5,6 @@ from app.core.database import get_db
 from app.core.exceptions import RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
-from app.schema.calendar import CreateCalendarDTOModel
 from app.schema.records import CreateRecordDTOModel, EditRecordDTOModel, EditRecordModel
 from app.services.record_service import RecordService
 
@@ -26,6 +25,7 @@ async def create_new_record(
     return BaseResponse(data=record_id)
 
 
+# TODO paging이랑 정렬조건 쿼리파라미터 모델 따로 만들지 만들지 고민 -> 쓰이는 부분 별로 없으면 굳이..? let me see
 @router.get("")
 @add_token_to_response
 async def get_user_records(
@@ -33,6 +33,8 @@ async def get_user_records(
     page: int = 1,
     size: int = 10,
     event_types: str | None = None,
+    order_by: str = "created_at",
+    direction: str = "DESC",
     relations: str | None = None,
     user_info=Depends(verify_token),
     db: Session = Depends(get_db),
@@ -45,6 +47,8 @@ async def get_user_records(
         is_received=is_received,
         page=page,
         size=size,
+        order_by=order_by,
+        direction=direction,
         event_types=event_types,
         relations=relations,
     )

@@ -64,3 +64,6 @@ class Records(BaseModel, table=True):
     amount: int = Field(sa_column=Column(Integer, default=0))
     status: StatusEnum = Field(sa_column=Column(String(4), default="A"))
     memo: str = Field(sa_column=Column(String(225), nullable=True))
+
+    class Config:
+        orm_mode = True
