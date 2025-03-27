@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import configs
+from app.core.exceptions import AttributeErrorException
 
 engine = create_engine(configs.DATABASE_URI, echo=True)
 
@@ -53,3 +54,16 @@ def convert_row_to_dict(query_result, dto_class: Type[T]):
 def convert_page_to_offset(size: int, page: int):
     """파라미터로 받은 paging 파라미터, offset 값으로 변환"""
     return (page - 1) * size
+
+
+def get_order_by_clause(model, order_by: str, direction: str):
+    """모델을 받아서 동적으로 정렬조건 반환하는 메소드."""
+    try:
+        order_column = getattr(model, order_by)
+        if direction == "DESC":
+            return order_column.desc()
+        return order_column.asc()
+    except AttributeError as e:
+        raise AttributeErrorException(
+            detail=f"{model.__name__} 테이블에 {order_by} 컬럼이 존재하지 않습니다."
+        )
