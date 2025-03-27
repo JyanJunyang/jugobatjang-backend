@@ -2,7 +2,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 
 from app.core.database import get_db
-from app.core.exceptions import InvalidRequestError, RequestDataMissingException
+from app.core.exceptions import (
+    InvalidRequestErrorException,
+    RequestDataMissingException,
+)
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
 from app.schema.relation import (
@@ -67,7 +70,7 @@ async def edit_user_relation(
 
     # 기본 관계 데이터 요청 시 InvalidRequestError
     if relation_id <= 101:
-        raise InvalidRequestError()
+        raise InvalidRequestErrorException()
 
     rel = RelationService(db=db)
     data = rel.edit_user_relations(
@@ -88,6 +91,6 @@ async def edit_user_relation(
     relation_id = req.relation_id
 
     if relation_id <= 101:
-        raise InvalidRequestError()
+        raise InvalidRequestErrorException()
     RelationService(db=db).delete_user_relation(relation_id=relation_id)
     return BaseResponse()
