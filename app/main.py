@@ -5,9 +5,10 @@ from app.api.enpoints.event import router as event_router
 from app.api.enpoints.record import router as record_router
 from app.api.enpoints.relation import router as relation_router
 from app.core.exceptions import (
+    AttributeErrorException,
     DataCreationNotAllowedException,
     DuplicatedErrorException,
-    InvalidRequestError,
+    InvalidRequestErrorException,
     NotFoundError,
     RequestDataMissingException,
     TokenExpiredException,
@@ -31,4 +32,5 @@ app.add_exception_handler(NotFoundError, exception_handler)
 app.add_exception_handler(TokenExpiredException, exception_handler)
 app.add_exception_handler(RequestDataMissingException, exception_handler)
 app.add_exception_handler(DataCreationNotAllowedException, exception_handler)
-app.add_exception_handler(InvalidRequestError, exception_handler)
+app.add_exception_handler(InvalidRequestErrorException, exception_handler)
+app.add_exception_handler(AttributeErrorException, exception_handler)

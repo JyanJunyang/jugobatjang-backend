@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.core.exceptions import RequestDataMissingException
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
-from app.schema.records import CreateRecordDTOModel, EditRecordDTOModel
+from app.schema.records import CreateRecordDTOModel, EditRecordDTOModel, EditRecordModel
 from app.services.record_service import RecordService
 
 router = APIRouter(prefix="/record", tags=["record"])
@@ -20,10 +20,12 @@ async def create_new_record(
 ):
     """장부 기록하는 API"""
     user_id = user_info.get("user_id")
-    record = RecordService(db=db).insert_new_record(req=req, user_id=user_id)
-    return BaseResponse(data=record)
+    record_id = RecordService(db=db).insert_new_record(req=req, user_id=user_id)
+
+    return BaseResponse(data=record_id)
 
 
+# TODO paging이랑 정렬조건 쿼리파라미터 모델 따로 만들지 만들지 고민 -> 쓰이는 부분 별로 없으면 굳이..? let me see
 @router.get("")
 @add_token_to_response
 async def get_user_records(
@@ -31,6 +33,8 @@ async def get_user_records(
     page: int = 1,
     size: int = 10,
     event_types: str | None = None,
+    order_by: str = "created_at",
+    direction: str = "DESC",
     relations: str | None = None,
     user_info=Depends(verify_token),
     db: Session = Depends(get_db),
@@ -43,6 +47,8 @@ async def get_user_records(
         is_received=is_received,
         page=page,
         size=size,
+        order_by=order_by,
+        direction=direction,
         event_types=event_types,
         relations=relations,
     )
@@ -71,29 +77,31 @@ async def edit_user_record(
 ):
     """기록 수정하는 API"""
     (
-        id,
-        name,
         amount,
         is_received,
         phone,
         status,
         memo,
-        event_date,
+        peer_name,
+        date,
+        calendar_date,
         excel_id,
         event_type_id,
         relation_id,
+        id,
     ) = req.model_dump().values()
 
     if all(
         value is None
         for value in [
-            name,
             amount,
             is_received,
             phone,
             status,
             memo,
-            event_date,
+            peer_name,
+            date,
+            calendar_date,
             excel_id,
             event_type_id,
             relation_id,
@@ -105,18 +113,21 @@ async def edit_user_record(
 
     user_id = user_info.get("user_id")
     RecordService(db=db).edit_user_record(
+        record_id=id,
         user_id=user_id,
-        id=id,
-        name=name,
-        amount=amount,
-        is_received=is_received,
-        phone=phone,
-        status=status,
-        memo=memo,
-        event_date=event_date,
-        excel_id=excel_id,
-        event_type_id=event_type_id,
-        relation_id=relation_id,
+        edit_data=EditRecordModel(
+            amount=amount,
+            is_received=is_received,
+            phone=phone,
+            status=status,
+            memo=memo,
+            date=date,
+            peer_name=peer_name,
+            calendar_date=calendar_date,
+            excel_id=excel_id,
+            event_type_id=event_type_id,
+            relation_id=relation_id,
+        ),
     )
 
     return BaseResponse(data=id)

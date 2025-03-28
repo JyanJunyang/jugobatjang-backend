@@ -43,14 +43,27 @@ class Records(BaseModel, table=True):
     __tablename__ = "records"
 
     id: int = Field(default=None, primary_key=True)
-    excel_id: int = Field(sa_column=Column(Integer, nullable=True))
     event_type_id: int = Field(sa_column=Column(Integer, nullable=False))
     relation_id: int = Field(sa_column=Column(Integer, nullable=False))
     user_id: int = Field(sa_column=Column(Integer, nullable=False))
     is_received: int = Field(sa_column=Column(SmallInteger, nullable=False))
-    event_date: datetime = Field(sa_column=Column(DateTime, nullable=False))
-    name: str = Field(sa_column=Column(String(64), nullable=False))
+    date: datetime = Field(
+        sa_column=Column(DateTime, nullable=False, comment="금액을 주거나 받은 날짜")
+    )
+    peer_name: str = Field(
+        sa_column=Column(
+            String(64), nullable=True, comment="금액을 주거나 받은 상대방의 이름"
+        )
+    )
+    calendar_date: datetime = Field(
+        sa_column=Column(DateTime, nullable=True, comment="캘린더 일정")
+    )
+    peer_name: str = Field(sa_column=Column(String(40), nullable=True))
+    excel_id: int = Field(sa_column=Column(Integer, nullable=True))
     phone: str = Field(sa_column=Column(String(64), nullable=True))
     amount: int = Field(sa_column=Column(Integer, default=0))
     status: StatusEnum = Field(sa_column=Column(String(4), default="A"))
     memo: str = Field(sa_column=Column(String(225), nullable=True))
+
+    class Config:
+        orm_mode = True

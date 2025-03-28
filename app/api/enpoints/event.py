@@ -2,7 +2,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 
 from app.core.database import get_db
-from app.core.exceptions import InvalidRequestError, RequestDataMissingException
+from app.core.exceptions import (
+    InvalidRequestErrorException,
+    RequestDataMissingException,
+)
 from app.core.security import verify_token
 from app.schema.base import BaseResponse, add_token_to_response
 from app.schema.event import CreateEventDTOModel, DelteEventDTOModel, EditEventDTOModel
@@ -60,7 +63,7 @@ async def edit_user_event(
         )
 
     if event_id <= 101:
-        raise InvalidRequestError()
+        raise InvalidRequestErrorException()
 
     event = EventService(db=db)
     data = event.edit_user_event(event_id=event_id, name=name, color_code=color_code)
@@ -79,6 +82,6 @@ async def edit_user_event(
     event_id = req.event_id
 
     if event_id <= 101:
-        raise InvalidRequestError()
+        raise InvalidRequestErrorException()
     EventService(db=db).delete_user_event(event_id=event_id)
     return BaseResponse()

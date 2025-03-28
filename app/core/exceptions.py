@@ -68,11 +68,21 @@ class DataCreationNotAllowedException(CustomException):
     DEFAULT_MESSAGE = "데이터를 더 이상 생성할 수 없습니다."
 
 
-class InvalidRequestError(CustomException):
+class InvalidRequestErrorException(CustomException):
     """잘못된 요청 오류"""
 
     STATUS_CODE = status.HTTP_400_BAD_REQUEST
     DEFAULT_MESSAGE = "잘못된 요청입니다."
+
+
+class AttributeErrorException(CustomException):
+    """Attribute 에러"""
+
+    STATUS_CODE = status.HTTP_500_INTERNAL_SERVER_ERROR
+    DEFAULT_MESSAGE = "Attribute Error"
+
+    def __init__(self, detail: Optional[str] = None):
+        super().__init__(detail=f"{detail}" or self.DEFAULT_MESSAGE)
 
 
 async def exception_handler(_, exc: Exception):
