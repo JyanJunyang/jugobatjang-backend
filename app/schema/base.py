@@ -10,6 +10,7 @@ class BaseResponse(BaseModel):
 
     status_code: int = 200
     data: Any | None = None
+    token: Any | None = None
     message: str = "success"
 
 
@@ -46,8 +47,9 @@ def add_token_to_response(func: Callable):
         token = user_info.get("token") if user_info else None
 
         if token:
-            response_data = {"data": response.data, "token": token}
-            return BaseResponse(data=response_data, status_code=200, message="success")
+            return BaseResponse(
+                data=response.data, token=token, status_code=200, message="success"
+            )
 
         return response
 
