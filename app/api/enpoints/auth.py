@@ -18,8 +18,8 @@ async def kakao_callback(req: Request):
     """카카오 서버 테스트용 redirect 경로"""
     code = req.query_params.get("code")
     auth = AuthService()
-    await auth.kakao_auth_callback(code=code)
-    return {"code": code}
+    res = await auth.kakao_auth_callback(code=code)
+    return {"res": res}
 
 
 @router.post("/signin", response_model=BaseResponse)
