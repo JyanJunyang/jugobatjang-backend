@@ -16,7 +16,7 @@ class StatusEnum(str, Enum):
 class EventTypes(BaseModel, table=True):
     """경조사 타입 테이블."""
 
-    __tablename__ = "eventtypes"
+    __tablename__ = "EventTypes"
 
     id: int = Field(default=None, primary_key=True)
     name: str = Field(sa_column=Column(String(48), nullable=False))
@@ -28,7 +28,7 @@ class EventTypes(BaseModel, table=True):
 class Relations(BaseModel, table=True):
     """관계 테이블"""
 
-    __tablename__ = "relations"
+    __tablename__ = "Relations"
 
     id: int = Field(default=None, primary_key=True)
     name: str = Field(sa_column=Column(String(48), nullable=False))
@@ -40,7 +40,7 @@ class Relations(BaseModel, table=True):
 class Records(BaseModel, table=True):
     """기록 테이블"""
 
-    __tablename__ = "records"
+    __tablename__ = "Records"
 
     id: int = Field(default=None, primary_key=True)
     event_type_id: int = Field(sa_column=Column(Integer, nullable=False))
@@ -66,4 +66,4 @@ class Records(BaseModel, table=True):
     memo: str = Field(sa_column=Column(String(225), nullable=True))
 
     class Config:
-        orm_mode = True
+        from_attributes = True
