@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.api.enpoints.auth import router as auth_router
 from app.api.enpoints.event import router as event_router
@@ -20,6 +21,14 @@ app = FastAPI(
     title="주고받장 API",
     description="주고받장 API 문서입니다. version 관리는 path에 녹이도록 하겠습니다.",
 )
+
+Instrumentator().instrument(app).expose(app)
+
+
+@app.get("/")
+def home():
+    return {"message": "start Metrics"}
+
 
 app.include_router(auth_router)
 app.include_router(record_router)
