@@ -56,7 +56,7 @@ async def sign_in(
         "refresh_token": refresh_token,
     }
 
-    return BaseResponse(status_code=200, data=token)
+    return BaseResponse(status_code=200, token=token)
 
 
 @router.post("/validate")
@@ -64,4 +64,4 @@ async def validate_token(
     headers: BaseHeader = Depends(get_headers),
 ):
     """토큰 유효성 체크"""
-    return BaseResponse(status_code=200, data=verify_token(headers=headers))
+    return BaseResponse(status_code=200, token=verify_token(headers=headers))
